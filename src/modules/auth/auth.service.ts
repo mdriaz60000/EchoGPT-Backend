@@ -7,9 +7,11 @@ import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
 
 import { RefreshTokenDto } from "./dto/refresh-token.dto";
-import { RegisterDto } from "./dto/login.dto";
+
 import { prisma } from "../../lib/prisma";
-import { LoginDto } from "./dto/register.dto";
+import { RegisterDto } from "./dto/register.dto";
+import { LoginDto } from "./dto/login.dto";
+
 
 
 @Injectable()

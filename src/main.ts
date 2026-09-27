@@ -1,36 +1,12 @@
+import { ValidationPipe } from "@nestjs/common";
+import { NestFactory } from "@nestjs/core";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
-// import { ValidationPipe } from "@nestjs/common";
-// import { NestFactory } from "@nestjs/core";
-
-// import { AppModule } from "./app.module";
-
-// async function bootstrap() {
-//   const app = await NestFactory.create(AppModule);
-
-//   app.useGlobalPipes(
-//     new ValidationPipe({
-//       whitelist: true,
-//       transform: true,
-//     }),
-//   );
-
-//   await app.listen(process.env.PORT ?? 5000);
-// }
-
-// bootstrap();
-
-
-
-import { ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-
-import { AppModule } from './app.module';
+import { AppModule } from "./app.module";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Global validation
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -38,17 +14,30 @@ async function bootstrap() {
     }),
   );
 
-  // Swagger configuration
   const config = new DocumentBuilder()
-    .setTitle('EchoGPT API')
-    .setDescription('EchoGPT Backend API Documentation')
-    .setVersion('1.0')
-    .addBearerAuth()
+    .setTitle("EchoGPT Backend API")
+    .setDescription(
+      "EchoGPT Backend REST API built with NestJS, PostgreSQL and Prisma",
+    )
+    .setVersion("1.0")
+    .addBearerAuth(
+      {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+        name: "Authorization",
+        in: "header",
+      },
+      "access-token",
+    )
     .build();
 
-  const document = SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(
+    app,
+    config,
+  );
 
-  SwaggerModule.setup('api-docs', app, document);
+  SwaggerModule.setup("docs", app, document);
 
   await app.listen(process.env.PORT ?? 5000);
 }

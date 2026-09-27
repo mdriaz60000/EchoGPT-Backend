@@ -4,16 +4,17 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 
-
-
 import { SendMessageDto } from "./dto/sendMessage.dto";
 import { prisma } from "../../lib/prisma";
 import { AiProviderService } from "../providers/aiProvider.service";
+import { UsageLogsService } from "../usageLogs/usageLogs.service";
+
 
 @Injectable()
 export class ChatService {
   constructor(
     private readonly aiProviderService: AiProviderService,
+    private readonly usageLogsService: UsageLogsService,
   ) {}
 
   // -------------------------
@@ -129,10 +130,46 @@ export class ChatService {
     // 5. Generate AI response
     // -------------------------
 
-    const aiResponse =
-      await this.aiProviderService.generateResponse(
-        data.message,
-      );
+    let aiResponse: string;
+
+    try {
+      aiResponse =
+        await this.aiProviderService.generateResponse(
+          data.message,
+        );
+
+      // -------------------------
+      // 5.1 Log successful request
+      // -------------------------
+
+      await this.usageLogsService.create({
+        userId,
+        provider: provider.type,
+        model: "gpt-4o-mini",
+        endpoint: "POST /chat",
+        success: true,
+        statusCode: 200,
+      });
+    } catch (error) {
+      // -------------------------
+      // 5.2 Log failed request
+      // -------------------------
+
+      await this.usageLogsService.create({
+        userId,
+        provider: provider.type,
+        model: "gpt-4o-mini",
+        endpoint: "POST /chat",
+        success: false,
+        statusCode: 500,
+        errorMessage:
+          error instanceof Error
+            ? error.message
+            : "AI request failed",
+      });
+
+      throw error;
+    }
 
     // -------------------------
     // 6. Save AI response

@@ -1,11 +1,17 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { IsEnum } from "class-validator";
 
-export enum SubscriptionPlanDto {
+export enum SubscriptionPlan {
   FREE = "FREE",
   PREMIUM = "PREMIUM",
 }
 
 export class ChangePlanDto {
-  @IsEnum(SubscriptionPlanDto)
-  plan: SubscriptionPlanDto;
+  @ApiProperty({
+    enum: SubscriptionPlan,
+    example: "PREMIUM",
+    description: "Subscription plan",
+  })
+  @IsEnum(SubscriptionPlan)
+  plan: SubscriptionPlan;
 }

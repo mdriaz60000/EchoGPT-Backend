@@ -11,11 +11,15 @@ import {
 
 import { Request } from "express";
 
-
 import { ChatService } from "./chat.service";
 import { JwtAuthGuard } from "../auth/guards/jwtAuthGuards";
 import { SendMessageDto } from "./dto/sendMessage.dto";
 
+import {
+  ApiAuth,
+  ApiError,
+  ApiSuccess,
+} from "../../common/decorators/swagger.decorator";
 
 interface AuthenticatedRequest extends Request {
   user: {
@@ -33,6 +37,21 @@ export class ChatController {
   ) {}
 
   // Send message
+  @ApiAuth(
+    "Chat",
+    "Send message to AI",
+  )
+  @ApiSuccess(
+    "AI response generated successfully",
+  )
+  @ApiError(
+    400,
+    "Request limit exceeded or no active AI provider available",
+  )
+  @ApiError(
+    404,
+    "Conversation not found",
+  )
   @Post()
   sendMessage(
     @Req() req: AuthenticatedRequest,
@@ -45,6 +64,13 @@ export class ChatController {
   }
 
   // Get user's conversations
+  @ApiAuth(
+    "Chat",
+    "Get user conversations",
+  )
+  @ApiSuccess(
+    "Conversations retrieved successfully",
+  )
   @Get("conversations")
   getConversations(
     @Req() req: AuthenticatedRequest,
@@ -55,6 +81,17 @@ export class ChatController {
   }
 
   // Get conversation with messages
+  @ApiAuth(
+    "Chat",
+    "Get conversation with messages",
+  )
+  @ApiSuccess(
+    "Conversation retrieved successfully",
+  )
+  @ApiError(
+    404,
+    "Conversation not found",
+  )
   @Get("conversations/:id")
   getConversation(
     @Req() req: AuthenticatedRequest,
@@ -67,6 +104,17 @@ export class ChatController {
   }
 
   // Delete conversation
+  @ApiAuth(
+    "Chat",
+    "Delete conversation",
+  )
+  @ApiSuccess(
+    "Conversation deleted successfully",
+  )
+  @ApiError(
+    404,
+    "Conversation not found",
+  )
   @Delete("conversations/:id")
   deleteConversation(
     @Req() req: AuthenticatedRequest,
