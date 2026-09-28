@@ -20,8 +20,8 @@ const prisma = new PrismaClient({
 });
 
 async function main() {
-  const email = "admin@echogpt.com";
-  const password = "Admin@123456";
+  const email = envVars.ADMIN_EMAIL;
+  const password = envVars.ADMIN_PASSWORD;
 
   const hashedPassword = await bcrypt.hash(password, 12);
 

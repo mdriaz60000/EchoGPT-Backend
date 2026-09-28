@@ -7,6 +7,7 @@ import { ChatModule } from "./modules/chat/chat.module";
 import { UsageLogsModule } from "./modules/usageLogs/usageLogs.module";
 import { WebSearchModule } from "./modules/webSearch/webSearch.module";
 import { AdminModule } from "./modules/admin/admin.module";
+import { AppController } from "./app.controller";
 
 
 @Module({
@@ -20,5 +21,6 @@ import { AdminModule } from "./modules/admin/admin.module";
     WebSearchModule,
     AdminModule
   ],
+  controllers: [AppController],
 })
 export class AppModule {}

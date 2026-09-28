@@ -13,6 +13,7 @@ import { SearchDto } from "./dto/search.dto";
 
 import { JwtAuthGuard } from "../auth/guards/jwtAuthGuards";
 import { WebSearchService } from "./webSearch.service";
+import { ApiAuth, ApiError, ApiSuccess } from "../../common/decorators/swagger.decorator";
 
 interface AuthenticatedRequest extends Request {
   user: {
@@ -29,6 +30,18 @@ export class WebSearchController {
     private readonly webSearchService: WebSearchService,
   ) {}
 
+
+   @ApiAuth(
+    "Web Search",
+    "Search the web",
+  )
+  @ApiSuccess(
+    "Web search completed successfully",
+  )
+  @ApiError(
+    400,
+    "Invalid search query",
+  )
   @Post()
   search(
     @Req() req: AuthenticatedRequest,
@@ -40,6 +53,16 @@ export class WebSearchController {
     );
   }
 
+
+
+
+  @ApiAuth(
+    "Web Search",
+    "Get web search history",
+  )
+  @ApiSuccess(
+    "Search history retrieved successfully",
+  )
   @Get("history")
   getHistory(
     @Req() req: AuthenticatedRequest,
